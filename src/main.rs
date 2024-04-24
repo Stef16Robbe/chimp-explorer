@@ -1,6 +1,5 @@
-use std::fs;
-
 use reqwest::header;
+use std::fs;
 
 mod types;
 
@@ -8,6 +7,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let query_date_range = "01%2F01%2F2023~12%2F31%2F2023";
 
     let cookie = fs::read_to_string("cookie.txt").unwrap();
+    let cookie = cookie.trim();
+
     let mut headers = header::HeaderMap::new();
     headers.insert(
         "Accept",
