@@ -7,9 +7,9 @@ use serde_json::Value;
 #[serde(rename_all = "camelCase")]
 pub struct Root {
     pub data: Vec<Registration>,
-     pub records_total: i64,
-     pub records_filtered: i64,
-     pub error: Value,
+    pub records_total: i64,
+    pub records_filtered: i64,
+    pub error: Value,
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Deserialize)] // TODO: impl Serialize for Registration
@@ -25,10 +25,10 @@ pub struct Registration {
     pub time: f64,
     pub status: i64,
     #[serde(
-        deserialize_with = "deserialize_hours_multiplier",
+        // deserialize_with = "deserialize_hours_multiplier",
         default = "default_hours_multiplier"
     )]
-    pub hours_multiplier: f32,
+    pub hours_multiplier: f64,
 }
 
 fn deserialize_date<'de, D>(deserializer: D) -> Result<NaiveDate, D::Error>
@@ -41,31 +41,32 @@ where
         .map_err(serde::de::Error::custom)
 }
 
-fn deserialize_hours_multiplier<'de, D>(deserializer: D) -> Result<f32, D::Error>
-where
-    D: Deserializer<'de>,
-{
-    let value: serde_json::Value = Deserialize::deserialize(deserializer)?;
+// TODO: make this work
+// fn deserialize_hours_multiplier<'de, D>(deserializer: D) -> Result<f32, D::Error>
+// where
+//     D: Deserializer<'de>,
+// {
+//     let value: serde_json::Value = Deserialize::deserialize(deserializer)?;
+//
+//     let task: &str = value
+//         .get("task")
+//         .and_then(serde_json::Value::as_str)
+//         .ok_or_else(|| serde::de::Error::custom("missing task"))?;
+//
+//     let hours_multiplier = match task {
+//         "Werkuren" => 1.0,
+//         "Standby VZ ma-za 3,2%" => 0.032,
+//         "Standby VZ zon 6,3%" => 0.063,
+//         "Inzet Standby  213%" => 2.13,
+//         "Verlof" => 0.0,
+//         "Feestdag" => 0.0,
+//         _ => 1.0,
+//     };
+//
+//     Ok(hours_multiplier)
+// }
 
-    let task: &str = value
-        .get("task")
-        .and_then(serde_json::Value::as_str)
-        .ok_or_else(|| serde::de::Error::custom("missing task"))?;
-
-    let hours_multiplier = match task {
-        "Werkuren" => 1.0,
-        "Standby VZ ma-za 3,2%" => 0.032,
-        "Standby VZ zon 6,3%" => 0.063,
-        "Inzet Standby  213%" => 2.13,
-        "Verlof" => 0.0,
-        "Feestdag" => 0.0,
-        _ => 1.0,
-    };
-
-    Ok(hours_multiplier)
-}
-
-fn default_hours_multiplier() -> f32 {
+fn default_hours_multiplier() -> f64 {
     1.0
 }
 
