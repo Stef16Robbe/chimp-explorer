@@ -3,7 +3,7 @@
 use std::fs::File;
 use std::io::Read;
 
-use crate::types;
+use crate::api::types;
 
 // temp local json usage so we don't unnecessarily call API
 // probably want to implement caching at some point
@@ -15,6 +15,7 @@ pub fn load_timechimp_data() -> Result<Vec<types::Registration>, Box<dyn std::er
     let json: types::Root = serde_json::from_str(&contents).expect("Failed to deserialize JSON");
 
     let mut regs = json.data;
+    regs.sort_by(|a, b| a.date.cmp(&b.date));
 
     // TODO: this works but still want to find a way to do this without extra fn call
     for reg in regs.iter_mut() {

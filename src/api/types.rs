@@ -71,6 +71,8 @@ fn default_hours_multiplier() -> f64 {
 }
 
 impl Registration {
+    // TODO:
+    // make this configurable by user
     pub fn set_multiplier(&mut self) {
         self.hours_multiplier = match self.task.as_str() {
             "Werkuren" => 1.0,

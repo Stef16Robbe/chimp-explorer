@@ -1,16 +1,14 @@
 [package]
 name = "chimp-explorer"
 version = "0.1.0"
+authors = ["Stef Robbe <stef.robbe@gmail.com>"]
+license = "MIT"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
 chrono = "0.4.38"
-color-eyre = "0.6.3"
 crossterm = "0.27.0"
-ratatui = "0.26.2"
-reqwest = { version = "0.12", features = ["blocking"] }
+ratatui = "0.26.0"
 serde = "1.0.198"
 serde_derive = "1.0.198"
 serde_json = "1.0.116"
