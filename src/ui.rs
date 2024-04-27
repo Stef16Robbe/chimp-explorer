@@ -48,6 +48,11 @@ fn create_line_chart(app: &App) -> Chart {
         .step_by((app.total_hours / 10.0) as usize)
         .map(|y| Span::raw(y.to_string()))
         .collect();
+    let bounds_y_max = if app.total_hours > 1680.0 {
+        app.total_hours * 1.2
+    } else {
+        1680 as f64
+    };
 
     let mut datasets = vec![Dataset::default()
         .name("Registered Hours".italic())
@@ -85,7 +90,7 @@ fn create_line_chart(app: &App) -> Chart {
             Axis::default()
                 .title("Hours")
                 .style(Style::default().gray())
-                .bounds([0.0, app.total_hours * 1.2])
+                .bounds([0.0, bounds_y_max])
                 .labels(labels_y),
         )
         .legend_position(Some(LegendPosition::TopLeft))
