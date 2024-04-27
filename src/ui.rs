@@ -49,12 +49,20 @@ fn create_line_chart(app: &App) -> Chart {
         .map(|y| Span::raw(y.to_string()))
         .collect();
 
-    let datasets = vec![Dataset::default()
+    let mut datasets = vec![Dataset::default()
         .name("Registered Hours".italic())
         .marker(symbols::Marker::Braille)
         .style(Style::default().fg(Color::Yellow))
         .graph_type(GraphType::Line)
         .data(&app.cumulative_hours)];
+
+    datasets.push(Dataset::default()
+        .name("Yearly hour target".italic())
+        .marker(symbols::Marker::Braille)
+        .style(Style::default().fg(Color::Green))
+        .graph_type(GraphType::Line)
+        .data(&app.hour_target));
+    
 
     let chart = Chart::new(datasets)
         .block(

@@ -15,6 +15,7 @@ pub struct App {
     pub registrations: Vec<Registration>,
     pub total_hours: f64,
     pub cumulative_hours: Vec<(f64, f64)>,
+    pub hour_target: Vec<(f64, f64)>,
 }
 
 impl Default for App {
@@ -24,6 +25,7 @@ impl Default for App {
             registrations: Vec::new(),
             total_hours: 0.0,
             cumulative_hours: Vec::new(),
+            hour_target: Vec::new(),
         }
     }
 }
@@ -60,6 +62,9 @@ impl App {
             self.cumulative_hours
                 .push((reg.date.ordinal() as f64, cumul_hours));
         }
+
+        // hard coded 1680 hour target for now
+        self.hour_target = (0..365).map(|x| (x as f64, 1680 as f64)).collect();
 
         Ok(())
     }
