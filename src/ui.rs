@@ -13,16 +13,23 @@ use crate::app::App;
 
 /// Renders the user interface widgets.
 pub fn render(app: &mut App, frame: &mut Frame) {
-    // This is where you add new widgets.
-    // See the following resources:
-    // - https://docs.rs/ratatui/latest/ratatui/widgets/index.html
-    // - https://github.com/ratatui-org/ratatui/tree/master/examples
-    render_title(frame, app);
-    render_line_chart(frame, app);
+    let layout = Layout::default()
+        .direction(Direction::Vertical)
+        .constraints(vec![
+            Constraint::Percentage(50),
+            Constraint::Percentage(50),
+        ])
+        .split(frame.size());
+
+    let title = create_title(&app);
+    let chart = create_line_chart(&app);
+
+    frame.render_widget(title, layout[0]);
+    frame.render_widget(chart, layout[1]);
 }
 
-fn render_title(frame: &mut Frame, app: &mut App) {
-    let data = Paragraph::new(format!("Total hours: {}", app.total_hours.round()))
+fn create_title(app: &App) -> Paragraph {
+    let paragraph = Paragraph::new(format!("Total hours: {}", app.total_hours.round()))
         .block(
             Block::bordered()
                 .title("Template")
@@ -32,12 +39,12 @@ fn render_title(frame: &mut Frame, app: &mut App) {
         .style(Style::default().fg(Color::Cyan).bg(Color::Black))
         .centered();
 
-    frame.render_widget(data, frame.size())
+    paragraph
 }
 
-fn render_line_chart(frame: &mut Frame, app: &mut App) {
+fn create_line_chart(app: &App) -> Chart {
     let labels_x: Vec<Span> = (0..12).map(|x| Span::raw((x + 1).to_string())).collect();
-    let labels_y = (0..app.total_hours as i32)
+    let labels_y = (0..(app.total_hours * 1.2) as i32)
         .step_by((app.total_hours / 10.0) as usize)
         .map(|y| Span::raw(y.to_string()))
         .collect();
@@ -63,18 +70,18 @@ fn render_line_chart(frame: &mut Frame, app: &mut App) {
             Axis::default()
                 .title("Months")
                 .style(Style::default().gray())
-                .bounds([1.0, 12.0])
+                .bounds([1.0, 365.0])
                 .labels(labels_x),
         )
         .y_axis(
             Axis::default()
                 .title("Hours")
                 .style(Style::default().gray())
-                .bounds([0.0, app.total_hours])
+                .bounds([0.0, app.total_hours * 1.2])
                 .labels(labels_y),
         )
         .legend_position(Some(LegendPosition::TopLeft))
         .hidden_legend_constraints((Constraint::Ratio(1, 2), Constraint::Ratio(1, 2)));
 
-    frame.render_widget(chart, frame.size());
+    chart
 }

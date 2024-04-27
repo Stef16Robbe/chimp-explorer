@@ -55,10 +55,10 @@ impl App {
                     + reg.time * reg.hours_multiplier)
                     .round()
             } else {
-                0.0
+                reg.time * reg.hours_multiplier
             };
             self.cumulative_hours
-                .push((reg.date.month() as f64, cumul_hours));
+                .push((reg.date.ordinal() as f64, cumul_hours));
         }
 
         Ok(())

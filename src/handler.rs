@@ -14,10 +14,6 @@ pub fn handle_key_events(key_event: KeyEvent, app: &mut App) -> AppResult<()> {
                 app.quit();
             }
         }
-        // KeyCode::Char('l') => {
-        //     app.load_data();
-        // }
-        // Other handlers you could add here.
         _ => {}
     }
     Ok(())
