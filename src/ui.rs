@@ -51,7 +51,7 @@ fn create_line_chart(app: &App) -> Chart {
     let bounds_y_max = if app.total_hours > 1680.0 {
         app.total_hours * 1.2
     } else {
-        1680 as f64
+        (1680.0 * 1.2) as f64
     };
 
     let mut datasets = vec![Dataset::default()
@@ -93,7 +93,7 @@ fn create_line_chart(app: &App) -> Chart {
                 .bounds([0.0, bounds_y_max])
                 .labels(labels_y),
         )
-        .legend_position(Some(LegendPosition::TopLeft))
+        .legend_position(Some(LegendPosition::BottomRight))
         .hidden_legend_constraints((Constraint::Ratio(1, 2), Constraint::Ratio(1, 2)));
 
     chart
