@@ -8,7 +8,7 @@ use crate::api::types;
 // temp local json usage so we don't unnecessarily call API
 // probably want to implement caching at some point
 pub fn load_timechimp_data() -> Result<Vec<types::Registration>, Box<dyn std::error::Error>> {
-    let mut local_json = File::open("res-2023.json")?;
+    let mut local_json = File::open("res-2024.json")?;
     let mut contents = String::new();
     local_json.read_to_string(&mut contents)?;
 

@@ -63,7 +63,7 @@ impl App {
         }
 
         // hard coded 1680 hour target for now
-        self.hour_target = (0..365).map(|x| (x as f64, 1680 as f64)).collect();
+        self.hour_target = (1..366).map(|x| (x as f64, 1680 as f64)).collect();
 
         // get unique customer with total hours in map
         let mut tmp_map: HashMap<&str, u64> = HashMap::new();
