@@ -8,7 +8,7 @@ use std::io;
 
 fn main() -> AppResult<()> {
     // Create an application.
-    let mut app = App::new();
+    let mut app = App::default();
     app.load_data().unwrap();
 
     // Initialize the terminal user interface.
