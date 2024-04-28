@@ -3,8 +3,8 @@ use ratatui::{
     prelude::*,
     style::{Color, Style, Stylize},
     widgets::{
-        block::Title, Axis, Block, BorderType, Borders, Chart, Dataset, GraphType, LegendPosition,
-        Paragraph,
+        block::Title, Axis, BarChart, Block, BorderType, Borders, Chart, Dataset, GraphType,
+        LegendPosition, Paragraph,
     },
     Frame,
 };
@@ -13,19 +13,27 @@ use crate::app::App;
 
 /// Renders the user interface widgets.
 pub fn render(app: &mut App, frame: &mut Frame) {
-    let layout = Layout::default()
+    let main_layout = Layout::default()
         .direction(Direction::Vertical)
-        .constraints(vec![
-            Constraint::Percentage(50),
-            Constraint::Percentage(50),
-        ])
+        .constraints(vec![Constraint::Percentage(50), Constraint::Percentage(50)])
         .split(frame.size());
 
-    let title = create_title(&app);
-    let chart = create_line_chart(&app);
+    let top_layout = Layout::default()
+        .direction(Direction::Horizontal)
+        .constraints(vec![
+            Constraint::Percentage(33),
+            Constraint::Percentage(33),
+            Constraint::Percentage(33),
+        ])
+        .split(main_layout[0]);
 
-    frame.render_widget(title, layout[0]);
-    frame.render_widget(chart, layout[1]);
+    let title = create_title(&app);
+    let line_chart = create_line_chart(&app);
+    let bar_chart = create_bar_chart(&app);
+
+    frame.render_widget(title, top_layout[0]);
+    frame.render_widget(bar_chart, top_layout[1]);
+    frame.render_widget(line_chart, main_layout[1]);
 }
 
 fn create_title(app: &App) -> Paragraph {
@@ -40,6 +48,25 @@ fn create_title(app: &App) -> Paragraph {
         .centered();
 
     paragraph
+}
+
+fn create_bar_chart(app: &App) -> BarChart {
+    // TODO:
+    // clean this shit up
+    let data: Vec<(&str, u64)> = app.customer_hours_division.iter().map(|(s, n)| (&s[..], *n)).collect();
+
+    BarChart::default()
+        .block(
+            Block::default()
+                .title("Hours per customer")
+                .borders(Borders::ALL),
+        )
+        .bar_width(15)
+        .bar_gap(5)
+        .bar_style(Style::new().yellow())
+        .value_style(Style::new().yellow())
+        .label_style(Style::new().white())
+        .data(&data)
 }
 
 fn create_line_chart(app: &App) -> Chart {
@@ -61,13 +88,14 @@ fn create_line_chart(app: &App) -> Chart {
         .graph_type(GraphType::Line)
         .data(&app.cumulative_hours)];
 
-    datasets.push(Dataset::default()
-        .name("Yearly hour target".italic())
-        .marker(symbols::Marker::Braille)
-        .style(Style::default().fg(Color::Green))
-        .graph_type(GraphType::Line)
-        .data(&app.hour_target));
-    
+    datasets.push(
+        Dataset::default()
+            .name("Yearly hour target".italic())
+            .marker(symbols::Marker::Braille)
+            .style(Style::default().fg(Color::Green))
+            .graph_type(GraphType::Line)
+            .data(&app.hour_target),
+    );
 
     let chart = Chart::new(datasets)
         .block(

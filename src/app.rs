@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::error;
 
 use chrono::Datelike;
@@ -10,12 +11,12 @@ pub type AppResult<T> = std::result::Result<T, Box<dyn error::Error>>;
 /// Application.
 #[derive(Debug)]
 pub struct App {
-    /// Is the application running?
     pub running: bool,
     pub registrations: Vec<Registration>,
     pub total_hours: f64,
     pub cumulative_hours: Vec<(f64, f64)>,
     pub hour_target: Vec<(f64, f64)>,
+    pub customer_hours_division: Vec<(String, u64)>,
 }
 
 impl Default for App {
@@ -26,6 +27,7 @@ impl Default for App {
             total_hours: 0.0,
             cumulative_hours: Vec::new(),
             hour_target: Vec::new(),
+            customer_hours_division: Vec::new(),
         }
     }
 }
@@ -44,6 +46,8 @@ impl App {
         self.running = false;
     }
 
+    // TODO:
+    // don't load all data at once at startup in a function like this lol
     pub fn load_data(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         self.registrations = load_timechimp_data().unwrap();
         for reg in &self.registrations {
@@ -65,6 +69,18 @@ impl App {
 
         // hard coded 1680 hour target for now
         self.hour_target = (0..365).map(|x| (x as f64, 1680 as f64)).collect();
+
+        // get unique customer with total hours in map
+        let mut tmp_map: HashMap<&str, u64> = HashMap::new();
+        for reg in &self.registrations {
+            *tmp_map.entry(&reg.customer).or_insert(0) += (reg.time * reg.hours_multiplier) as u64;
+        }
+
+        // converting it to a `Vec<(String, f64)>` cause that's what the BarChart wants
+        self.customer_hours_division = tmp_map
+            .into_iter()
+            .map(|(customer, total_hours)| (String::from(customer), total_hours))
+            .collect();
 
         Ok(())
     }
