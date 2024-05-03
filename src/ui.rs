@@ -5,8 +5,8 @@ use ratatui::{
     prelude::*,
     style::{Color, Style, Stylize},
     widgets::{
-        block::Title, Axis, BarChart, Block, BorderType, Borders, Chart, Dataset, GraphType,
-        LegendPosition, Paragraph, block::Padding
+        block::Padding, block::Title, Axis, BarChart, Block, BorderType, Borders, Chart, Dataset,
+        GraphType, LegendPosition, Paragraph,
     },
     Frame,
 };
@@ -56,7 +56,10 @@ fn create_info(app: &App, style: Style) -> Paragraph {
         "Current hours: {}\n\n\
         Hours left until target is reached: {}\n\n\
         Based on 40-hour workweek and no vacations,\nyou will hit your target on: {}",
-        app.total_hours.round(), hours_left, completed_actual);
+        app.total_hours.round(),
+        hours_left,
+        completed_actual
+    );
 
     let paragraph = Paragraph::new(text)
         .block(
@@ -64,7 +67,7 @@ fn create_info(app: &App, style: Style) -> Paragraph {
                 .title("Quick info")
                 .title_alignment(Alignment::Center)
                 .border_type(BorderType::Rounded)
-                .padding(Padding::new(2, 0, 2, 0))
+                .padding(Padding::new(2, 0, 2, 0)),
         )
         .style(style)
         .left_aligned();
@@ -75,7 +78,11 @@ fn create_info(app: &App, style: Style) -> Paragraph {
 fn create_bar_chart(app: &App, style: Style) -> BarChart {
     // TODO:
     // clean this shit up
-    let data: Vec<(&str, u64)> = app.customer_hours_division.iter().map(|(s, n)| (&s[..], *n)).collect();
+    let data: Vec<(&str, u64)> = app
+        .customer_hours_division
+        .iter()
+        .map(|(s, n)| (&s[..], *n))
+        .collect();
 
     // TODO:
     // fix sizes for smaller resolutions
