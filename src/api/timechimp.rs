@@ -70,6 +70,7 @@ pub fn load_timechimp_data() -> Result<Vec<types::Registration>, Box<dyn std::er
 //         .expect("Failed to deserialize JSON");
 
 //     let mut regs = json.data;
+//     regs.sort_by(|a, b| a.date.cmp(&b.date));
 
 //     // TODO: this works but still want to find a way to do this without extra fn call
 //     for reg in regs.iter_mut() {
