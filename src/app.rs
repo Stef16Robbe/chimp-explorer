@@ -46,29 +46,29 @@ impl App {
     pub fn load_data(&mut self) -> Result<(), Box<dyn std::error::Error>> {
         self.registrations = load_timechimp_data().unwrap();
         for reg in &self.registrations {
-            self.total_hours += reg.time * reg.hours_multiplier;
+            self.total_hours += reg.hours * reg.hours_multiplier;
         }
 
         for reg in self.registrations.iter() {
             // (month, cumulative hours)
-            let cumul_hours = if self.cumulative_hours.len() > 0 {
+            let cumul_hours = if !self.cumulative_hours.is_empty() {
                 (self.cumulative_hours[self.cumulative_hours.len() - 1].1
-                    + reg.time * reg.hours_multiplier)
+                    + reg.hours * reg.hours_multiplier)
                     .round()
             } else {
-                reg.time * reg.hours_multiplier
+                reg.hours * reg.hours_multiplier
             };
             self.cumulative_hours
                 .push((reg.date.ordinal() as f64, cumul_hours));
         }
 
         // hard coded 1680 hour target for now
-        self.hour_target = (1..366).map(|x| (x as f64, 1680 as f64)).collect();
+        self.hour_target = (1..366).map(|x| (x as f64, 1680_f64)).collect();
 
         // get unique customer with total hours in map
         let mut tmp_map: HashMap<&str, u64> = HashMap::new();
         for reg in &self.registrations {
-            *tmp_map.entry(&reg.customer).or_insert(0) += (reg.time * reg.hours_multiplier) as u64;
+            *tmp_map.entry(&reg.customer).or_insert(0) += (reg.hours * reg.hours_multiplier) as u64;
         }
 
         // converting it to a `Vec<(String, f64)>` cause that's what the BarChart wants

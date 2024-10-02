@@ -1,4 +1,4 @@
-use chrono::{NaiveDate, NaiveDateTime};
+use chrono::NaiveDate;
 use serde::{Deserialize, Deserializer};
 use serde_derive::Deserialize;
 use serde_json::Value;
@@ -13,17 +13,15 @@ pub struct Root {
 }
 
 #[derive(Default, Debug, Clone, PartialEq, Deserialize)] // TODO: impl Serialize for Registration
-#[serde(rename_all = "camelCase")]
+#[serde(rename_all = "PascalCase")]
 pub struct Registration {
-    pub id: i64,
-    pub week: i64,
+    pub id: String,
     #[serde(deserialize_with = "deserialize_date")]
     pub date: NaiveDate,
     pub customer: String,
-    pub project: String,
+    pub project_name: String,
     pub task: String,
-    pub time: f64,
-    pub status: i64,
+    pub hours: f64,
     #[serde(
         // deserialize_with = "deserialize_hours_multiplier",
         default = "default_hours_multiplier"
@@ -36,9 +34,7 @@ where
     D: Deserializer<'de>,
 {
     let s = String::deserialize(deserializer)?;
-    NaiveDateTime::parse_from_str(&s, "%Y-%m-%dT%H:%M:%S")
-        .map(|dt| dt.date())
-        .map_err(serde::de::Error::custom)
+    NaiveDate::parse_from_str(&s, "%Y-%m-%d").map_err(serde::de::Error::custom)
 }
 
 // TODO: make this work
@@ -78,6 +74,7 @@ impl Registration {
             "Werkuren" => 1.0,
             "Standby VZ ma-za 3,2%" => 0.032,
             "Standby VZ zon 6,3%" => 0.063,
+            "Inzet Standby  140%" => 2.13,
             "Inzet Standby  213%" => 2.13,
             "Verlof" => 0.0,
             "Feestdag" => 0.0,

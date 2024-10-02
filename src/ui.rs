@@ -31,9 +31,9 @@ pub fn render(app: &mut App, frame: &mut Frame) {
         ])
         .split(main_layout[0]);
 
-    let info = create_info(&app, style);
-    let bar_chart = create_bar_chart(&app, style);
-    let line_chart = create_line_chart(&app, style);
+    let info = create_info(app, style);
+    let bar_chart = create_bar_chart(app, style);
+    let line_chart = create_line_chart(app, style);
 
     frame.render_widget(info, top_layout[0]);
     frame.render_widget(bar_chart, top_layout[1]);
@@ -107,7 +107,7 @@ fn create_line_chart(app: &App, style: Style) -> Chart {
     let bounds_y_max = if app.total_hours > 1680.0 {
         app.total_hours * 1.2
     } else {
-        (1680.0 * 1.2) as f64
+        1680.0 * 1.2
     };
 
     // TODO:
